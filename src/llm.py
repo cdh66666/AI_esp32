@@ -1,15 +1,15 @@
-#deepseek apikey: sk-b6e35f5ddcd54552bbe2c6996ae566a
 from openai import OpenAI
+import yaml
 
-
- 
 class LLM:
     def __init__(self):
         """
-        LLM初始化，配置参数内置
+        LLM初始化，从config.yaml读取配置
         """
+        with open('config.yaml', 'r') as f:
+            config = yaml.safe_load(f)
         self.model_name = "deepseek-chat"
-        self.api_key = "sk-3a6e6937b7cd4530914c5affe7e7abff"
+        self.api_key = config['deepseek_api_key']
         self.url = "https://api.deepseek.com"
         self.client = OpenAI(api_key=self.api_key, base_url=self.url)
 
@@ -66,4 +66,3 @@ if __name__ == "__main__":
     llm.ask_once()
     print("\n【多轮问答测试】")
     llm.ask_loop()
-    
