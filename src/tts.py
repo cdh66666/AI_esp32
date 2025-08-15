@@ -1,4 +1,9 @@
 import edge_tts
+from playsound import playsound
+from  asyncio import run as asyncio_run
+import  os
+import uuid
+
 
 class TTS:
     def __init__(self, voice="zh-CN-XiaoxiaoNeural"):
@@ -16,18 +21,18 @@ class TTS:
         communicate = edge_tts.Communicate(text, self.voice)
         await communicate.save(filename)
 
-    def text_to_speech(self, text, filename="output.mp3", play=True):
+    def text_to_speech(self, text, play=True):
         """
         同步文本转语音，便于主程序直接调用
         :param text: str, 要转换的文本
-        :param filename: str, 输出文件名
         :param play: bool, 是否自动播放
         """
-        import asyncio, os
-        asyncio.run(self.text_to_speech_async(text, filename))
+        filename = f"output_{uuid.uuid4()}.mp3"
+        asyncio_run(self.text_to_speech_async(text, filename))
         if play:
-            os.system(f'start {filename}')
-        input("按回车键退出...")
+            playsound(filename)
+            os.remove(filename)
+ 
  
  
 if __name__ == "__main__":
