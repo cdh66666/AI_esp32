@@ -1,5 +1,6 @@
 {
     "trae.tab.enableAutoImport": false,
     "trae.tab.cue": true,
-    "trae.tab.enableRename": false
+    "trae.tab.enableRename": false,
+    "idf.pythonInstallPath": "C:\\Users\\admin\\.espressif\\tools\\idf-python\\3.11.2\\python.exe"
 }
