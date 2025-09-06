@@ -1,0 +1,16 @@
+{
+  "idf.portWin": "COM18",
+  "idf.flashType": "UART",
+  "idf.openOcdConfigs": [
+    "board/esp32s3-bridge.cfg"
+  ],
+  "idf.customExtraVars": {
+    "IDF_TARGET": "esp32s3"
+  },
+  "clangd.path": "c:\\Users\\admin\\Desktop\\ESP_IDF\\Espressif\\tools\\tools\\esp-clang\\15.0.0-23786128ae\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=c:\\Users\\admin\\Desktop\\ESP_IDF\\Espressif\\tools\\tools\\xtensa-esp32s3-elf\\esp-12.2.0_20230208\\xtensa-esp32s3-elf\\bin\\xtensa-esp32s3-elf-gcc.exe",
+    "--compile-commands-dir=c:\\Users\\admin\\Documents\\GitHub\\AI_esp32\\ESP32S3\\1-boot-key\\build"
+  ]
+}
