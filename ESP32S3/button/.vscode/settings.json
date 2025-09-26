@@ -1,0 +1,26 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.espIdfPathWin": "C:/Users/admin/Desktop/ESP_IDF/Espressif/frameworks/esp-idf-v5.3.3/",
+  "idf.pythonInstallPath": "C:\\Users\\admin\\Desktop\\ESP_IDF\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
+  "idf.openOcdConfigs": [
+    "board/esp32s3-bridge.cfg"
+  ],
+  "idf.portWin": "COM14",
+  "idf.toolsPathWin": "C:\\Users\\admin\\Desktop\\ESP_IDF\\Espressif",
+  "idf.customExtraVars": {
+    "IDF_TARGET": "esp32s3"
+  },
+  "clangd.path": "c:\\Users\\admin\\Desktop\\ESP_IDF\\Espressif\\tools\\tools\\esp-clang\\15.0.0-23786128ae\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=c:\\Users\\admin\\Desktop\\ESP_IDF\\Espressif\\tools\\tools\\xtensa-esp32-elf\\esp-12.2.0_20230208\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-gcc.exe",
+    "--compile-commands-dir=${workspaceFolder}\\build"
+  ],
+  "files.associations": {
+    "button.h": "c",
+    "string.h": "c",
+    "esp_log.h": "c",
+    "esp_err.h": "c"
+  },
+  "idf.flashType": "UART"
+}
