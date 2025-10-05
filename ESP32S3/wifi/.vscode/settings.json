@@ -1,9 +1,0 @@
-{
-  "C_Cpp.intelliSenseEngine": "default",
-  "files.associations": {
-    "wifi_manager.h": "c",
-    "task.h": "c"
-  },
-  "idf.flashType": "UART",
-  "idf.portWin": "COM14"
-}
