@@ -1,63 +1,80 @@
+# 基于ESP32的日式女仆风格对话与灯控系统
+## 项目概述
+本项目是一套运行在ESP32开发板上的MicroPython应用，核心功能为**日式女仆语气智能对话**与**WS2812灯带精准控制**的结合。通过对接DeepSeek大模型实现自然语言交互，同时支持3路WS2812灯珠的独立颜色控制，还具备聊天记录自动摘要、本地存储及指令管理功能，适用于智能家居场景下的趣味交互需求。
 
 
-
-# 🚀 基于 ESP32 的全栈智能设备开发
-
- 
-  
-  
-- [🚀 基于 ESP32 的全栈智能设备开发](#-基于-esp32-的全栈智能设备开发)
-  - [💡 项目主要功能](#-项目主要功能)
-  - [📁 项目文件简介](#-项目文件简介)
-  - [🛠️ 开发环境准备](#️-开发环境准备)
-  - [⚙️ 环境配置流程](#️-环境配置流程)
-    
+## 核心功能
+| 功能模块 | 具体描述 |
+|----------|----------|
+| 日式女仆对话 | 基于DeepSeek大模型，以温柔女仆语气（句尾带“哦”“呢”）与用户交互，支持日常聊天、补气中药等主题内容讲解 |
+| WS2812灯控 | 支持3个WS2812灯珠的独立控制（亮/灭、颜色调节），可通过自然语言指令触发（如“第2个灯亮淡黄色”） |
+| 指令管理 | 内置3个核心指令：`show`查看聊天记录摘要、`clear`清空历史记录、`exit`保存记录并退出 |
+| 聊天记录管理 | 自动提炼对话重点生成摘要，本地存储（`chat_summary.txt`），超过6000字符时自动截断，避免内存溢出 |
+| WiFi自动连接 | 支持WiFi重试连接（最多3次），连接成功后显示IP地址，断网时提示联网状态 |
 
 
-
-## 💡 项目主要功能
-
-- LLM 大模型对话：支持多轮/单轮 AI 聊天
-- TTS 文本转音频：文本转语音，支持多角色
-- Opus 音频编解码：音频压缩与传输
-- ASR 本地音频转文字：本地语音识别
-
- 
-## 📁 项目文件简介
-
-| 文件/文件夹         | 说明                                   |
-|---------------------|---------------------------------------|
-| main.py             | 一体化 AI 问答+语音播报主程序           |
-| llm.py              | LLM 大模型对话示例，支持流式问答        |
-| tts.py              | 文本转语音（TTS）示例，支持多角色       |
-| output.mp3          | 语音合成输出文件                       | 
-| requirements.txt    | Python 库依赖列表                      | 
-| config.yaml         | 项目参数配置文件                       | 
+## 硬件需求
+- ESP32开发板（如ESP32-WROOM-32）
+- WS2812灯带/灯珠（3个，支持单灯独立控制）
+- 杜邦线（用于连接ESP32与WS2812）
+- USB数据线（用于ESP32供电与代码烧录）
 
 
----
+## 硬件接线
+根据`config.py`中定义的WS2812硬件配置，接线方式如下：
+| ESP32引脚 | WS2812引脚 | 说明 |
+|-----------|------------|------|
+| IO18      | DIN        | 数据信号输入（控制灯珠颜色与亮灭） |
+| 3.3V/5V   | VCC        | 电源输入（根据WS2812规格选择，建议3.3V避免烧毁） |
+| GND       | GND        | 接地（确保共地，避免信号干扰） |
 
 
-## 🛠️ 开发环境准备
+## 软件环境与依赖库
+### 1. 基础环境
+- 开发工具：Thonny（用于MicroPython代码编辑、烧录与ESP32交互）
+- 固件版本：MicroPython for ESP32（建议使用v1.20及以上版本）
+- 联网需求：ESP32需连接WiFi（用于下载依赖库、对接DeepSeek API）
 
-1. [【Python环境搭建】Miniconda的安装及配置教程](https://blog.csdn.net/AlgoZZi/article/details/145074821?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522b8d7c9378b6fe8ef91ed19aca136a061%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=b8d7c9378b6fe8ef91ed19aca136a061&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-145074821-null-null.142^v102^pc_search_result_base7&utm_term=miniconda%E5%AE%89%E8%A3%85&spm=1018.2226.3001.4187)
-2. [Visual Studio Code](https://code.visualstudio.com/)
-3. [ESP-IDF 插件安装教程](https://blog.csdn.net/qq_57139623/article/details/147322963)
-
----
-
-
-## ⚙️ 环境配置流程
-
-```bash
-# 1. 创建虚拟环境
-conda create -n ai_esp32 python=3.11 -y
-# 2. 激活虚拟环境
-conda activate ai_esp32
-# 3. 安装python库
-pip install -r requirements.txt 
-```
- 
- 
+### 2. 依赖库安装
+项目依赖的第三方库需通过**Thonny的Python交互终端**，在ESP32联网后通过`mip`库下载，具体步骤如下：
+1. 打开Thonny，连接ESP32并进入Python交互终端（底部“Shell”面板）；
+2. 执行WiFi连接命令（或先运行`wifi_manager.py`确保联网）；
+3. 在交互终端依次执行以下`mip`命令下载依赖库：
+   ```python
+   import mip
+   # 下载urequests（用于发送HTTP请求，对接DeepSeek API）
+   mip.install("urequests")
+   ```
 
 
+## 代码文件说明
+| 文件名 | 作用 | 核心逻辑 |
+|--------|------|----------|
+| `main.py` | 程序入口 | 初始化所有核心组件（WiFi、输入处理、对话客户端、灯控），启动对话循环，调度指令与灯控逻辑 |
+| `config.py` | 配置文件 | 存储WiFi账号密码、DeepSeek API密钥、WS2812硬件参数（引脚IO18、灯珠数量3）、女仆语气提示词 |
+| `wifi_manager.py` | WiFi管理 | 实现WiFi连接（带重试）、断开、IP获取、连接状态检查 |
+| `chinese_input.py` | 中文输入处理 | 支持中文输入读取，清空输入缓冲区避免乱码，处理Windows换行符（\r\n）问题 |
+| `deepseek_client.py` | 大模型对接 | 对接DeepSeek API实现流式对话，管理聊天历史，自动生成/保存/加载对话摘要 |
+| `cmd_handler.py` | 指令处理 | 处理`show`/`clear`/`exit`3个特殊指令，实现记录查看、清空与退出保存 |
+| `ws2812_controller.py` | 灯控核心 | 封装WS2812控制方法：全灭（`clear`）、全灯同色（`set_color`）、单灯独立控制（`set_single_led`） |
+| `light_parser.py` | 灯控指令解析 | 从大模型回复中提取`[LIGHT_CMD]`标记的灯控JSON指令，调用`ws2812_controller`执行 |
+| `boot.py` | 启动脚本 | ESP32每次启动时执行（当前默认注释了osdebug与webrepl，可根据需求开启） |
+| `chat_summary.txt` | 聊天记录摘要 | 自动生成的对话摘要文件，`exit`时保存，下次启动时加载 |
+
+
+## 使用步骤
+1. **硬件接线**：按“硬件接线”部分连接ESP32与WS2812灯珠；
+2. **代码烧录**：通过Thonny将所有`.py`文件烧录到ESP32；
+3. **配置修改**：打开`config.py`，修改`WIFI_SSID`/`WIFI_PASSWORD`为你的WiFi信息，`API_KEY`为你的DeepSeek API密钥；
+4. **启动程序**：在Thonny中运行`main.py`，ESP32会自动连接WiFi；
+5. **交互操作**：
+   - 日常聊天：直接输入问题（如“讲个黄芪的故事”），助手以女仆语气回复；
+   - 灯控指令：输入灯控需求（如“第2个灯亮淡黄色”），助手自动执行灯控；
+   - 特殊指令：输入`show`查看记录、`clear`清空历史、`exit`保存并退出。
+
+
+## 注意事项
+1. DeepSeek API密钥获取：需在DeepSeek官网申请API密钥，替换`config.py`中的`API_KEY`，否则无法对接大模型；
+2. WiFi稳定性：确保ESP32连接的WiFi稳定，联网失败时程序会提示并退出；
+3. 灯珠索引规则：“第1个灯”对应代码中的`index:0`，“第2个灯”对应`index:1`，“第3个灯”对应`index:2`，输入指令时需注意顺序；
+4. 内存限制：ESP32内存有限，对话摘要超过6000字符时会自动截断，避免内存溢出。
